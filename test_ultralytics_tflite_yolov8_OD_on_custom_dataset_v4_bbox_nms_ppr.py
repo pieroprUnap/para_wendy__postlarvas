@@ -103,7 +103,7 @@ s_height = 640
 overlap = 0.75
 ruta_checkpoint_bbox = f"{os.getcwd()}/best_weight_epoch12_tflite_yolov8n".replace("\\","/")
 # weight_file_name = "best"
-weight_file_name = "best_weight_ds_official_epch12_float32"
+weight_file_name = "best_weight_ds_official_epch250_float32_v2"
 second_weight_file_name = "best_weight_recorte_region_interes_official_epch12_float32_v1"
 
 # algorithm_name = "yolov8n"
@@ -153,7 +153,7 @@ if es_carpeta(ruta_images):
         iou_thresholds = [0.30] # list of iou_thresholds of current confidence_threshold
         iou_thresholds_conteo_total_results = [0] # list of counting in different iou_thresholds of current confidence_threshold
 
-        for confidence_threshold in [0.40]:
+        for confidence_threshold in [0.60]:
             confidence_threshold_configs_dict[confidence_threshold] = {
                 'iou_thresholds': iou_thresholds,
                 'conteos': iou_thresholds_conteo_total_results
