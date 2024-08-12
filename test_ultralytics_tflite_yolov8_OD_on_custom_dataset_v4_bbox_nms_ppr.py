@@ -77,7 +77,7 @@ def copiar_archivo(archivo_original, ruta_destino):
         print(f"NO existe el archivo_original: {archivo_original}")
 
 
-from custom_pre_process_tools import read_and_correct_image_orientation, proceso_autorecortado_imagen, split_images
+from custom_pre_process_tools import read_and_correct_image_orientation, proceso_autorecortado_imagen, split_images_torch
 
 from secundary_extra_tools import custom_print
 from secundary_extra_tools import get_current_date_formatted, time_difference_v2
@@ -85,7 +85,7 @@ from secundary_extra_tools import es_carpeta, listar_imagenes_en_ruta, crear_dir
 from secundary_extra_tools import cargar_imagen_to_rgb, get_file_name_and_extension_from_full_path, convertir_imagen_from_rgb_to_bgr, guardar_imagen
 
 from custom_OD_post_process_tools import get_all_predicted_OD_yolov8_annotations_parallel_v1, obtener_datos_escalado_prediccion_OD_v1, filter_OD_NMS_annotations_data_v1
-from custom_OD_prediction_tools import realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4
+from custom_OD_prediction_tools import realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v3, realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4, realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4_Parallel
 
 ruta_base = f"{os.getcwd()}"
 ruta_salida = f"{os.getcwd()}/predictions_epoch12_mi_raspberry"
@@ -181,7 +181,7 @@ if es_carpeta(ruta_images):
         initialTime_resume_over_all_images = datetime.now()
 
         ######################################### OBTENER IMAGENES SPLITEADAS #######################################
-        split_images_dict, image_splits_keys, image_splits_list = split_images(full_image_loaded, split_width=s_width, split_height=s_height, overlap=overlap)
+        split_images_dict, image_splits_keys, image_splits_list = split_images_torch(full_image_loaded, split_width=s_width, split_height=s_height, overlap=overlap)
 
         imgsz = s_height
         imgsz = s_width
@@ -203,7 +203,9 @@ if es_carpeta(ruta_images):
             ruta_txt_archivo = f"{ruta_salida}/{nombre_txt_file}.txt"
             
             ######################################### PREDECIR LOS SPLITS DE LA IMAGEN Y ESCALAR LAS PREDICCIONES DE LOS SPLITS HACIA LAS DIMENSIONES DE LA IMAGEN ORIGINAL #######################################
-            all_results, _ = realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4(model, imgsz, image_splits_list, custom_model_device, confidence_threshold)
+            all_results, _ = realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v3(model, image_splits_list, custom_model_device, batch_size, confidence_threshold)
+            # all_results, _ = realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4(model, imgsz, image_splits_list, custom_model_device, confidence_threshold)
+            # all_results, _ = realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4_Parallel(model, imgsz, image_splits_list, custom_model_device, confidence_threshold)
             
             ######################################### PREDECIR LOS SPLITS DE LA IMAGEN Y ESCALAR LAS PREDICCIONES DE LOS SPLITS HACIA LAS DIMENSIONES DE LA IMAGEN ORIGINAL #######################################
             scores, centroids, bboxs, category_ids, keys = get_all_predicted_OD_yolov8_annotations_parallel_v1(all_results, image_splits_keys)

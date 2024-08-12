@@ -849,7 +849,7 @@ def get_merged_image_splits_v1(image_splits_results, image_splits_keys, custom_h
 
 
 
-def split_images(image, split_width, split_height, overlap):
+def split_images_numpy(image, split_width, split_height, overlap):
     
     from secundary_extra_tools import start_points
     
