@@ -781,6 +781,36 @@ def realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v3(model, image_sp
         # Liberar la memoria no utilizada
         gc.collect()
 
+def realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4(model, custom_imgsz, image_splits_list, device, custom_confidence_treshold):
+    
+    import gc
+    from tqdm import tqdm
+    
+    if device == "cuda:0":
+        pass
+
+    # Inicializa una lista vacía para almacenar los resultados de cada iteración del batch
+    all_results = []
+    
+    try:
+        # results_model = model.predict(source=ruta_salida_archivos_tmp, device=device, retina_masks=False, show_boxes=True, save=False, save_txt=False, conf=custom_confidence_treshold, verbose=False)
+
+        # Itera sobre cada elemento en image_splits_list
+        for idx in tqdm(range(len(image_splits_list)), desc="Prediccion de splits de imagenes", leave=False):
+            # Obtiene el elemento actual
+            image_split = image_splits_list[idx]
+
+            # Realiza la predicción para el elemento actual
+            result_model = model([image_split], device=device, conf=custom_confidence_treshold, imgsz=custom_imgsz, verbose=False)
+            
+            # Extiende la lista all_results con los resultados del modelo actual
+            all_results.extend(result_model)
+
+        return (all_results, None)
+
+    finally:
+        # Liberar la memoria no utilizada
+        gc.collect()
 
 
 def plotear_mascara(mascara, image_name):

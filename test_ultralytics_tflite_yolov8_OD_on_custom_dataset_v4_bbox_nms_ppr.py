@@ -1,11 +1,7 @@
-import torch
-import argparse
 import os
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-import re
-import pytz
 import json
 from tqdm import tqdm
 
@@ -87,7 +83,7 @@ def copiar_archivo(archivo_original, ruta_destino):
 
 from custom_pre_process_tools import split_images
 
-from secundary_extra_tools import custom_print, actualizar_conteos_v1
+from secundary_extra_tools import custom_print
 from secundary_extra_tools import get_current_date_formatted, time_difference_v2
 from secundary_extra_tools import es_carpeta, listar_imagenes_en_ruta, crear_directorio, crear_archivo_txt
 from secundary_extra_tools import cargar_imagen_to_rgb, get_file_name_and_extension_from_full_path, convertir_imagen_from_rgb_to_bgr, guardar_imagen

@@ -1,7 +1,6 @@
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
 import os
 import random
 
@@ -1320,6 +1319,7 @@ def calculate_box_iou(box1, box2):
     return iou
 
 def filter_OD_annotations_data_v2(grouped_annotations_data):
+    import pandas as pd
 
     filtered_annotations_data = np.empty(len(grouped_annotations_data), dtype=object)
 

@@ -255,6 +255,22 @@ def get_current_date_formatted():
 initialTime = None
 finalTime = None
 
+def format_timedelta_v2(delta):
+    seconds = int(delta.total_seconds())
+    secs_in_a_hour = 3600
+    secs_in_a_min = 60
+
+    hours, seconds = divmod(seconds, secs_in_a_hour)
+    minutes, seconds = divmod(seconds, secs_in_a_min)
+
+    # Extracting milliseconds
+    # milliseconds = delta.microseconds // 1000
+
+    # time_fmt = f"{hours:02d} hrs {minutes:02d} min {seconds:02d} s {milliseconds:03d} ms"
+    time_fmt = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    return time_fmt
+
 def format_timedelta(delta):
     seconds = int(delta.total_seconds())
     secs_in_a_hour = 3600
@@ -270,6 +286,24 @@ def format_timedelta(delta):
     time_fmt = f"{hours:02d}:{minutes:02d}:{seconds:02d}:{milliseconds:03d}"
 
     return time_fmt, hours, minutes, seconds, milliseconds
+
+def time_difference_v2(initialTime, finalTime):
+    # subtract two variables of type datetime in python
+    resta_time = finalTime - initialTime
+
+    # resta_time = str(resta_time)
+    # resta_time = datetime.strptime(resta_time, "%H:%M:%S")
+    total_second = resta_time
+    time_fmt_output = format_timedelta_v2(total_second)
+    # print(f'\n{time_fmt_output}\n')
+    # print(resta_time)
+    # print(type(resta_time))
+
+    # print("hours: ", hours)
+    # print("minutes: ", minutes)
+    # print("seconds: ", seconds)
+
+    return time_fmt_output
 
 def time_difference(initialTime, finalTime):
     # subtract two variables of type datetime in python
