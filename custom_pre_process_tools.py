@@ -940,3 +940,34 @@ def proceso_autorecortado_imagen(custom_image, custom_model):
     else:
         # print("No predictions found.")
         return None
+
+def read_and_correct_image_orientation(ruta_nombre_archivo):
+    from PIL import Image, ExifTags
+    import numpy as np
+    # Cargar la imagen usando PIL para poder acceder a los metadatos EXIF
+    image_pil = Image.open(ruta_nombre_archivo)
+
+    # Obtener la orientación de los metadatos EXIF
+    try:
+        exif = image_pil._getexif()
+        if exif is not None:
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation] == 'Orientation':
+                    break
+
+            orientation = exif.get(orientation, 1)
+
+            # Aplicar la rotación necesaria
+            if orientation == 3:
+                image_pil = image_pil.rotate(180, expand=True)
+            elif orientation == 6:
+                image_pil = image_pil.rotate(270, expand=True)
+            elif orientation == 8:
+                image_pil = image_pil.rotate(90, expand=True)
+    except Exception as e:
+        print(f"Error al corregir la orientación: {e}")
+
+    # Convertir la imagen a RGB (si no lo está) y luego a un array de NumPy compatible con OpenCV
+    image_rgb = np.array(image_pil.convert('RGB'))
+
+    return image_rgb

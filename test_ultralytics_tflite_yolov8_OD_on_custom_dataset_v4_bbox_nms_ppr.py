@@ -41,10 +41,6 @@ def get_folder_name_from_full_path(full_path):
     folder_name = os.path.basename(full_path)
     return folder_name
 
-def cargar_imagen_to_rgb(ruta_nombre_archivo):
-    import cv2
-    return cv2.cvtColor( cv2.imread(ruta_nombre_archivo), cv2.COLOR_BGR2RGB)
-
 def cargar_imagen_to_bgr(ruta_nombre_archivo):
     import cv2
     return cv2.cvtColor(cv2.imread(ruta_nombre_archivo), cv2.COLOR_RGB2BGR)
@@ -81,7 +77,7 @@ def copiar_archivo(archivo_original, ruta_destino):
         print(f"NO existe el archivo_original: {archivo_original}")
 
 
-from custom_pre_process_tools import proceso_autorecortado_imagen, split_images
+from custom_pre_process_tools import read_and_correct_image_orientation, proceso_autorecortado_imagen, split_images
 
 from secundary_extra_tools import custom_print
 from secundary_extra_tools import get_current_date_formatted, time_difference_v2
@@ -170,8 +166,7 @@ if es_carpeta(ruta_images):
 
         image_file_name, image_file_extension = get_file_name_and_extension_from_full_path(image_file)
 
-        full_image_loaded = cargar_imagen_to_rgb(f"{ruta_images}/{image_file}")
-
+        full_image_loaded = read_and_correct_image_orientation(f"{ruta_images}/{image_file}")
         full_image_loaded = proceso_autorecortado_imagen(full_image_loaded, model2)
 
         height_full_image_loaded, width_full_image_loaded = full_image_loaded.shape[:2]
@@ -179,7 +174,8 @@ if es_carpeta(ruta_images):
         copy_full_image_loaded = convertir_imagen_from_rgb_to_bgr(full_image_loaded.copy())
         ruta_salida_imagen = f"{ruta_salida}/{image_file_name}.jpg"
         
-        copiar_archivo(f"{ruta_images}/{image_file}",f"{ruta_salida}/{image_file}")
+        guardar_imagen(copy_full_image_loaded, f"{ruta_salida}/{image_file_name}.jpg")
+        # copiar_archivo(f"{ruta_images}/{image_file}",f"{ruta_salida}/{image_file}")
 
         initialTime_resume_over_all_images = None
         initialTime_resume_over_all_images = datetime.now()
