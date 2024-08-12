@@ -785,6 +785,7 @@ def realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4(model, custom_i
     
     import gc
     from tqdm import tqdm
+    import concurrent.futures
     
     if device == "cuda:0":
         pass
@@ -792,19 +793,23 @@ def realizar_proceso_prediccion_yolov8_de_imagenes_spliteadas_v4(model, custom_i
     # Inicializa una lista vacía para almacenar los resultados de cada iteración del batch
     all_results = []
     
-    try:
-        # results_model = model.predict(source=ruta_salida_archivos_tmp, device=device, retina_masks=False, show_boxes=True, save=False, save_txt=False, conf=custom_confidence_treshold, verbose=False)
-
-        # Itera sobre cada elemento en image_splits_list
-        for idx in tqdm(range(len(image_splits_list)), desc="Prediccion de splits de imagenes", leave=False):
-            # Obtiene el elemento actual
-            image_split = image_splits_list[idx]
-
-            # Realiza la predicción para el elemento actual
+    def process_batch(batch):
+        batch_results = []
+        for image_split in batch:
             result_model = model([image_split], device=device, conf=custom_confidence_treshold, imgsz=custom_imgsz, verbose=False)
+            batch_results.extend(result_model)
+        return batch_results
+    
+    try:
+        batch_size = 4
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = []
+            for i in range(0, len(image_splits_list), batch_size):
+                batch = image_splits_list[i:i+batch_size]
+                futures.append(executor.submit(process_batch, batch))
             
-            # Extiende la lista all_results con los resultados del modelo actual
-            all_results.extend(result_model)
+            for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Prediccion de splits de imagenes", leave=False):
+                all_results.extend(future.result())
 
         return (all_results, None)
 
