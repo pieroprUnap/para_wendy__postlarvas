@@ -916,4 +916,27 @@ def split_images_torch(image, split_width, split_height, overlap):
 
     return split_images_dict, image_splits_keys, tensor_splits
 
+def proceso_autorecortado_imagen(custom_image, custom_model):
+    # Realizar la predicción con el modelo
+    results = custom_model.predict(custom_image)
+    
+    # Verificar si hay predicciones
+    if len(results) > 0 and len(results[0].boxes) > 0:
+        first_prediction = results[0].boxes[0]
+        boxes_data = first_prediction.xyxy[0].tolist()
+        left, top, right, bottom = boxes_data
 
+        def auto_recortar_imagen(imagen, left, top, right, bottom):
+            x1 = max(0, min(int(left), imagen.shape[1]))
+            y1 = max(0, min(int(top), imagen.shape[0]))
+            crop_width = min(int(right - left), imagen.shape[1] - x1)
+            crop_height = min(int(bottom - top), imagen.shape[0] - y1)
+            return imagen[y1:y1+crop_height, x1:x1+crop_width]
+
+        # Recortar la imagen
+        recorte = auto_recortar_imagen(custom_image, left, top, right, bottom)
+        # print(f"boxes_data of first prediction: {boxes_data}")
+        return recorte
+    else:
+        # print("No predictions found.")
+        return None

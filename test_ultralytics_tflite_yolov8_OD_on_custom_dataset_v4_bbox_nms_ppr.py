@@ -81,7 +81,7 @@ def copiar_archivo(archivo_original, ruta_destino):
         print(f"NO existe el archivo_original: {archivo_original}")
 
 
-from custom_pre_process_tools import split_images
+from custom_pre_process_tools import proceso_autorecortado_imagen, split_images
 
 from secundary_extra_tools import custom_print
 from secundary_extra_tools import get_current_date_formatted, time_difference_v2
@@ -108,6 +108,7 @@ overlap = 0.75
 ruta_checkpoint_bbox = f"{os.getcwd()}/best_weight_epoch12_tflite_yolov8n".replace("\\","/")
 # weight_file_name = "best"
 weight_file_name = "best_weight_ds_official_epch12_float32"
+second_weight_file_name = "best_weight_recorte_region_interes_official_epch12_float32_v1"
 
 # algorithm_name = "yolov8n"
 # algorithm_name = "yolov8n_tflite"
@@ -120,6 +121,7 @@ custom_checkpoint_name = custom_checkpoint_name.replace("-", "_")
 
 # model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.pt"
 model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.tflite"
+model_path_auto_recorte_imagen = f"{ruta_checkpoint_bbox}/{second_weight_file_name}.tflite"
 
 if es_carpeta(ruta_images):
 
@@ -143,6 +145,8 @@ if es_carpeta(ruta_images):
     
     from ultralytics import YOLO
     model = YOLO(model_path)
+    model2 = YOLO(model_path_auto_recorte_imagen)
+    
     
     
     # for index, image_file in enumerate(images_path_list):
@@ -168,7 +172,8 @@ if es_carpeta(ruta_images):
 
         full_image_loaded = cargar_imagen_to_rgb(f"{ruta_images}/{image_file}")
 
-        # full_image_loaded = cargar_imagen_to_bgr(f"{ruta_images}/{image_file}")
+        full_image_loaded = proceso_autorecortado_imagen(full_image_loaded, model2)
+
         height_full_image_loaded, width_full_image_loaded = full_image_loaded.shape[:2]
         
         copy_full_image_loaded = convertir_imagen_from_rgb_to_bgr(full_image_loaded.copy())
