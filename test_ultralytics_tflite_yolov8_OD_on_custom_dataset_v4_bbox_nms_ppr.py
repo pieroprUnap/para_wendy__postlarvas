@@ -115,8 +115,8 @@ batch_size = 4
 custom_checkpoint_name = get_folder_name_from_full_path(f"{ruta_checkpoint_bbox}")
 custom_checkpoint_name = custom_checkpoint_name.replace("-", "_")
 
-# model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.pt"
-model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.tflite"
+model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.pt"
+# model_path = f"{ruta_checkpoint_bbox}/{weight_file_name}.tflite"
 model_path_auto_recorte_imagen = f"{ruta_checkpoint_bbox}/{second_weight_file_name}.tflite"
 
 if es_carpeta(ruta_images):
