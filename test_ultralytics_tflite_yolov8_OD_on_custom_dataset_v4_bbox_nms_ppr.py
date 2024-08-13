@@ -104,7 +104,8 @@ overlap = 0.75
 ruta_checkpoint_bbox = f"{os.getcwd()}/best_weight_epoch12_tflite_yolov8n".replace("\\","/")
 # weight_file_name = "best"
 weight_file_name = "best_weight_ds_official_epch250_float32_v2"
-second_weight_file_name = "best_weight_recorte_region_interes_official_epch12_float32_v1"
+# second_weight_file_name = "best_weight_recorte_region_interes_official_epch12_float32_v1"
+second_weight_file_name = "best_weight_recorte_region_interes_official_epch12_float32_v2"
 
 # algorithm_name = "yolov8n"
 # algorithm_name = "yolov8n_tflite"
