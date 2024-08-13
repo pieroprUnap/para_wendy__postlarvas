@@ -918,7 +918,7 @@ def split_images_torch(image, split_width, split_height, overlap):
 
 def proceso_autorecortado_imagen(custom_image, custom_model):
     # Realizar la predicción con el modelo
-    results = custom_model.predict(custom_image, imgsz=736)
+    results = custom_model.predict(custom_image, imgsz=640)
     
     # Verificar si hay predicciones
     if len(results) > 0 and len(results[0].boxes) > 0:
